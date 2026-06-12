@@ -43,7 +43,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.Lumo;
 import io.spring.start.site.ui.Preferences.Entry;
 
 /**
@@ -76,6 +75,8 @@ public class MainView extends AppLayout {
 	private final List<Entry> histories = new ArrayList<>();
 
 	private final List<Entry> favorites = new ArrayList<>();
+
+	private boolean darkMode;
 
 	public MainView(InitializrUiService service, Preferences preferences) {
 		this.service = service;
@@ -143,10 +144,7 @@ public class MainView extends AppLayout {
 	}
 
 	private void applyTheme(String theme) {
-		if ("dark".equalsIgnoreCase(theme)) {
-			getElement().getThemeList().add(Lumo.DARK);
-			this.themeToggle.setIcon(new Icon(VaadinIcon.SUN_O));
-		}
+		setDarkMode("dark".equalsIgnoreCase(theme));
 	}
 
 	private void recordHistory() {
@@ -267,17 +265,21 @@ public class MainView extends AppLayout {
 	}
 
 	private void toggleTheme() {
-		var themeList = getElement().getThemeList();
-		if (themeList.contains(Lumo.DARK)) {
-			themeList.remove(Lumo.DARK);
-			this.themeToggle.setIcon(new Icon(VaadinIcon.MOON));
-			this.preferences.saveTheme("light");
-		}
-		else {
-			themeList.add(Lumo.DARK);
-			this.themeToggle.setIcon(new Icon(VaadinIcon.SUN_O));
-			this.preferences.saveTheme("dark");
-		}
+		setDarkMode(!this.darkMode);
+		this.preferences.saveTheme(this.darkMode ? "dark" : "light");
+	}
+
+	/**
+	 * Switches between the Aura light and dark color schemes. Aura keys its dark variant
+	 * off the CSS {@code color-scheme} property rather than a Lumo theme attribute, so
+	 * the scheme is applied to the document root to cover overlays (dialogs, menus) that
+	 * render outside this view.
+	 * @param dark whether the dark color scheme should be active
+	 */
+	private void setDarkMode(boolean dark) {
+		this.darkMode = dark;
+		this.themeToggle.setIcon(new Icon(dark ? VaadinIcon.SUN_O : VaadinIcon.MOON));
+		getElement().executeJs("document.documentElement.style.colorScheme = $0;", dark ? "dark" : "light");
 	}
 
 	public InitializrFormModel getModel() {
