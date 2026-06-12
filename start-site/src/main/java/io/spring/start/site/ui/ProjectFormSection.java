@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -60,7 +61,7 @@ public class ProjectFormSection extends VerticalLayout {
 		RadioButtonGroup<String> type = radioGroup("Project", this.service.getTypes());
 		RadioButtonGroup<String> language = radioGroup("Language", this.service.getLanguages());
 		this.bootVersion = radioGroup("Spring Boot", this.service.getBootVersions());
-		add(type, language, this.bootVersion);
+		add(responsiveForm(type, language, this.bootVersion));
 
 		add(new H2("Project Metadata"));
 		TextField group = new TextField("Group");
@@ -75,10 +76,11 @@ public class ProjectFormSection extends VerticalLayout {
 		RadioButtonGroup<String> packaging = radioGroup("Packaging", this.service.getPackagings());
 		RadioButtonGroup<String> javaVersion = radioGroup("Java", this.service.getJavaVersions());
 		List<DefaultMetadataElement> formats = this.service.getConfigurationFileFormats();
-		add(packaging, javaVersion);
+		FormLayout options = responsiveForm(packaging, javaVersion);
 		if (!formats.isEmpty()) {
-			add(radioGroup("Config file", formats));
+			options.add(radioGroup("Config file", formats));
 		}
+		add(options);
 
 		this.binder.forField(type).bind(InitializrFormModel::getType, InitializrFormModel::setType);
 		this.binder.forField(language).bind(InitializrFormModel::getLanguage, InitializrFormModel::setLanguage);
@@ -130,6 +132,21 @@ public class ProjectFormSection extends VerticalLayout {
 			.replaceAll("^\\.|\\.$", "");
 		packageNameField.setValue(derived);
 		this.model.setPackageName(derived);
+	}
+
+	/**
+	 * Wraps the given radio groups in a {@link FormLayout} styled like the Project
+	 * Metadata block, so the groups flow two-per-row on wide screens and collapse to a
+	 * single column below the default {@code 32em} breakpoint.
+	 * @param groups the radio groups to lay out
+	 * @return the configured form layout
+	 */
+	private FormLayout responsiveForm(RadioButtonGroup<?>... groups) {
+		FormLayout layout = new FormLayout(groups);
+		layout.setWidthFull();
+		layout.setResponsiveSteps(new ResponsiveStep("0", 1), new ResponsiveStep("32em", 2),
+				new ResponsiveStep("48em", 3));
+		return layout;
 	}
 
 	private RadioButtonGroup<String> radioGroup(String label, List<DefaultMetadataElement> elements) {
