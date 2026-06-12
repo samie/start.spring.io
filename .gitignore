@@ -37,3 +37,14 @@ target
 /start-client/package-lock.json
 /start-client/yarn-error.log
 /start-client/analysis
+### Vaadin (start-site) ###
+/start-site/node_modules/
+/start-site/node/
+/start-site/package.json
+/start-site/package-lock.json
+/start-site/pnpm-lock.yaml
+/start-site/tsconfig.json
+/start-site/types.d.ts
+/start-site/vite.generated.ts
+/start-site/src/main/frontend/generated/
+/start-site/src/main/bundles/

@@ -2,10 +2,11 @@
 :library: https://github.com/spring-io/initializr
 
 This repository configures a {library}[Spring Initializr] instance with a custom UI
-running at https://start.spring.io. The following modules are available:
+running at https://start.spring.io. The UI is a server-side
+https://vaadin.com/[Vaadin Flow] application hosted inside `start-site`.
+The following modules are available:
 
-* `start-client`: client-side assets
-* `start-site`: server infrastructure and metadata configuration
+* `start-site`: server infrastructure, metadata configuration, and the Vaadin UI
 * `start-site-verification`: tests to verify the validity of the metadata
 
 [[using]]
@@ -46,21 +47,21 @@ the project's tests can be run using the `full` profile:
     $ ./mvnw -Pfull clean install
 ----
 
-If building `start-client` fails, you may have an outdated cache that can be deleted as
-follows:
+For a production build that includes Vaadin's optimized frontend bundle, enable
+the `production` profile:
 
 [indent=0]
 ----
-    $ cd start-client
-    $ rm -rf .cache node_modules
+    $ ./mvnw -Pproduction clean install
 ----
 
 
 
 [[run-app]]
 === Running the app locally
-As long as you've built the project beforehand (in particular `start-client`), you can
-easily start the app as any other Spring Boot app:
+You can start the app as any other Spring Boot app. In development mode Vaadin
+provisions Node + Vite on first run, so this also doubles as a frontend dev
+server:
 
 [indent=0]
 ----

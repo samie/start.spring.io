@@ -32,6 +32,11 @@ spring:
     error:
       include-message: always
 
+vaadin:
+  # Keep "/" free for Initializr's CLI/HAL endpoints; the Vaadin UI is
+  # mounted at /ui/* and HomeController forwards browser requests there.
+  url-mapping: /ui/*
+
 initializr:
   name:
     value: ""

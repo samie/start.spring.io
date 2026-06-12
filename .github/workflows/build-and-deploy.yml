@@ -32,17 +32,20 @@ jobs:
           key: test-repositories-${{ runner.os }}-${{ github.run_id }}
           restore-keys: test-repositories-${{ runner.os }}
 
-      - name: Cache node_modules
+      - name: Cache Vaadin frontend
         uses: actions/cache@v5
         with:
-          path: start-client/node_modules
-          key: node-modules-${{ hashFiles('start-client/yarn.lock') }}
+          path: |
+            start-site/node_modules
+            start-site/src/main/bundles
+          key: vaadin-frontend-${{ hashFiles('start-site/pom.xml') }}
+          restore-keys: vaadin-frontend-
 
       - name: Build with Maven
         env:
           START_SPRING_IO_TMPDIR: /tmp/start-spring-io-cache-2024-12-11
           GOOGLE_TAGMANAGER_ID: ${{ vars.GOOGLE_TAGMANAGER_ID }}
-        run: ./mvnw --batch-mode --update-snapshots verify
+        run: ./mvnw --batch-mode --update-snapshots -Pproduction verify
 
       - name: Set up Azure
         uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3.0.0
