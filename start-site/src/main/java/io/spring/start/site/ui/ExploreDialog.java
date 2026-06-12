@@ -92,19 +92,24 @@ public class ExploreDialog extends Dialog {
 				String key = accumulator.toString();
 				Node directory = directories.get(key);
 				if (directory == null) {
-					directory = new Node(segments[i], null);
+					directory = new Node(segments[i], null, key);
 					directories.put(key, directory);
 					data.addItem(parent, directory);
 				}
 				parent = directory;
 			}
-			Node file = new Node(segments[segments.length - 1], entry.getValue());
+			Node file = new Node(segments[segments.length - 1], entry.getValue(), entry.getKey());
 			data.addItem(parent, file);
 		}
 		return data;
 	}
 
-	private record Node(String name, String content) {
+	/**
+	 * A tree node. The {@code path} is included so two nodes that share a display
+	 * {@code name} and {@code content} (e.g. a project's root {@code demo} directory and
+	 * a {@code demo} package directory) remain distinct items in the {@link TreeData}.
+	 */
+	private record Node(String name, String content, String path) {
 
 	}
 
