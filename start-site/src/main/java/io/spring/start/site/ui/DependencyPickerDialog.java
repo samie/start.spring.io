@@ -75,6 +75,11 @@ public class DependencyPickerDialog extends Dialog {
 		add(body);
 		Button close = new Button("Close", (event) -> close());
 		getFooter().add(close);
+		addOpenedChangeListener((event) -> {
+			if (event.isOpened()) {
+				search.focus();
+			}
+		});
 		reload();
 	}
 
@@ -123,10 +128,7 @@ public class DependencyPickerDialog extends Dialog {
 		content.setPadding(false);
 		content.setSpacing(false);
 		content.getStyle().set("padding", "var(--lumo-space-s) var(--lumo-space-m)");
-		if (valid) {
-			content.getStyle().set("cursor", "pointer");
-		}
-		else {
+		if (!valid) {
 			content.getStyle().set("opacity", "0.55").set("cursor", "not-allowed");
 			Span invalid = new Span(row.entry().invalidMessage());
 			invalid.getStyle()
@@ -137,12 +139,6 @@ public class DependencyPickerDialog extends Dialog {
 		boolean selected = this.model.getDependencies().contains(dependency.getId());
 		if (valid && selected) {
 			content.getStyle().set("background", "var(--lumo-primary-color-10pct)");
-		}
-		if (valid) {
-			content.addClickListener((event) -> {
-				this.onToggle.accept(dependency.getId());
-				refresh("");
-			});
 		}
 		Button add = new Button(selected ? "Remove" : "Add", (event) -> {
 			this.onToggle.accept(dependency.getId());
