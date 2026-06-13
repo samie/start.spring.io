@@ -44,8 +44,11 @@ public class ExploreDialog extends Dialog {
 		setWidth("60rem");
 		setHeight("40rem");
 		TreeGrid<Node> tree = new TreeGrid<>();
-		tree.addHierarchyColumn(Node::name).setHeader("File");
-		tree.setSizeFull();
+		tree.addHierarchyColumn(Node::name).setHeader("File").setAutoWidth(true).setFlexGrow(0);
+		tree.setHeightFull();
+		// Size the tree to its longest visible item rather than stretching to half the
+		// dialog; the content pane (below) takes the remaining width.
+		tree.getStyle().set("flex", "0 0 auto").set("width", "fit-content").set("max-width", "22rem");
 		TreeData<Node> data = buildTreeData(files);
 		tree.setDataProvider(new TreeDataProvider<>(data));
 		tree.addSelectionListener((event) -> event.getFirstSelectedItem().ifPresent((node) -> {
@@ -67,6 +70,7 @@ public class ExploreDialog extends Dialog {
 		right.setPadding(false);
 		right.setSpacing(false);
 		right.setSizeFull();
+		right.getStyle().set("flex-grow", "1");
 		HorizontalLayout body = new HorizontalLayout(tree, right);
 		body.setSizeFull();
 		body.setSpacing(true);
