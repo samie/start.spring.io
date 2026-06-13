@@ -255,9 +255,15 @@ public class MainView extends AppLayout {
 		VerticalLayout formWrapper = new VerticalLayout(this.formSection);
 		formWrapper.setPadding(true);
 		formWrapper.setSpacing(true);
+		// Fill the split pane and scroll vertically when the form is taller than the
+		// viewport, rather than overflowing the pane.
+		formWrapper.setHeightFull();
+		formWrapper.getStyle().set("overflow", "auto");
 		VerticalLayout right = new VerticalLayout(this.dependenciesSection, this.actionsBar);
 		right.setPadding(true);
 		right.setSpacing(true);
+		right.setHeightFull();
+		right.getStyle().set("overflow", "auto");
 		SplitLayout split = new SplitLayout(formWrapper, right);
 		split.setSizeFull();
 		split.setSplitterPosition(60);
