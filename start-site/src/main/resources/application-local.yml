@@ -1,0 +1,16 @@
+# Profile for running start.spring.io standalone/locally.
+#
+# Seeds a small, static set of Spring Boot versions so the UI has a realistic
+# choice without depending on the live list fetched from api.spring.io. When the
+# network is available a successful refresh still replaces these with the live
+# versions; when it is offline/failing, StartInitializrMetadataUpdateStrategy
+# falls back to this seeded list instead of failing.
+#
+# Activate with: --spring.profiles.active=local  (or SPRING_PROFILES_ACTIVE=local)
+initializr:
+  bootVersions:
+    - name: 3.5.0
+      id: 3.5.0
+    - name: 4.0.0
+      id: 4.0.0
+      default: true
