@@ -49,7 +49,11 @@ public class DependencyPickerDialog extends Dialog {
 
 	private final Consumer<String> onToggle;
 
+	private final TextField search;
+
 	private final VirtualList<Row> list;
+
+	private final Span emptyState;
 
 	private List<Row> allRows = List.of();
 
@@ -60,15 +64,20 @@ public class DependencyPickerDialog extends Dialog {
 		setHeaderTitle("Add dependencies");
 		setWidth("36rem");
 		setHeight("32rem");
-		TextField search = new TextField();
-		search.setPlaceholder("Web, Security, JPA, Actuator, Devtools...");
-		search.setWidthFull();
-		search.setValueChangeMode(ValueChangeMode.EAGER);
-		search.addValueChangeListener((event) -> refresh(event.getValue()));
+		this.search = new TextField();
+		this.search.setPlaceholder("Web, Security, JPA, Actuator, Devtools...");
+		this.search.setWidthFull();
+		this.search.setValueChangeMode(ValueChangeMode.EAGER);
+		this.search.addValueChangeListener((event) -> refresh(event.getValue()));
 		this.list = new VirtualList<>();
 		this.list.setSizeFull();
 		this.list.setRenderer(new com.vaadin.flow.data.renderer.ComponentRenderer<>(this::renderRow));
-		VerticalLayout body = new VerticalLayout(search, this.list);
+		this.emptyState = new Span("No matching dependencies");
+		this.emptyState.getStyle()
+			.set("color", "var(--lumo-secondary-text-color)")
+			.set("padding", "var(--lumo-space-m)");
+		this.emptyState.setVisible(false);
+		VerticalLayout body = new VerticalLayout(this.search, this.list, this.emptyState);
 		body.setSizeFull();
 		body.setPadding(false);
 		body.setSpacing(true);
@@ -77,7 +86,7 @@ public class DependencyPickerDialog extends Dialog {
 		getFooter().add(close);
 		addOpenedChangeListener((event) -> {
 			if (event.isOpened()) {
-				search.focus();
+				this.search.focus();
 			}
 		});
 		reload();
@@ -107,6 +116,11 @@ public class DependencyPickerDialog extends Dialog {
 		List<Row> filtered = needle.isEmpty() ? this.allRows
 				: this.allRows.stream().filter((row) -> row.matches(needle)).toList();
 		this.list.setItems(filtered);
+		// The VirtualList does not visually clear its last rendered row when handed an
+		// empty list, so swap in an explicit empty-state message instead (gh #1).
+		boolean empty = filtered.isEmpty();
+		this.list.setVisible(!empty);
+		this.emptyState.setVisible(empty);
 	}
 
 	private com.vaadin.flow.component.Component renderRow(Row row) {
@@ -142,7 +156,9 @@ public class DependencyPickerDialog extends Dialog {
 		}
 		Button add = new Button(selected ? "Remove" : "Add", (event) -> {
 			this.onToggle.accept(dependency.getId());
-			refresh("");
+			// Keep the user's current query in effect after a toggle rather than
+			// resetting to the full catalog (gh #2).
+			refresh(this.search.getValue());
 		});
 		add.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_SMALL);
 		add.setEnabled(valid);

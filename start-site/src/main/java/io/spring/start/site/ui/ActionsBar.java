@@ -65,7 +65,7 @@ public class ActionsBar extends HorizontalLayout {
 		this.explore = new Button("Explore", (event) -> explore());
 		this.more = new MenuBar();
 		this.more.addThemeVariants(MenuBarVariant.LUMO_TERTIARY);
-		var menu = this.more.addItem("…");
+		var menu = this.more.addItem("More");
 		menu.getSubMenu().addItem("Share", (event) -> this.onShare.run());
 		menu.getSubMenu().addItem("Bookmark", (event) -> this.onBookmark.run());
 		add(this.generate, this.explore, this.more);
@@ -111,6 +111,8 @@ public class ActionsBar extends HorizontalLayout {
 			download.getStyle().set("display", "none");
 			UI.getCurrent().add(download);
 			download.getElement().executeJs("this.click(); setTimeout(() => this.remove(), 1000);");
+			Notification success = Notification.show("Downloading " + filename + "…");
+			success.addThemeVariants(com.vaadin.flow.component.notification.NotificationVariant.LUMO_SUCCESS);
 			this.afterGenerate.run();
 		}
 		catch (RuntimeException ex) {

@@ -1,0 +1,13 @@
+{
+  "name": "start-site-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright end-to-end validation tests for the start.spring.io Vaadin UI",
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

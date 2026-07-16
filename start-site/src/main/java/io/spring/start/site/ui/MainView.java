@@ -89,6 +89,8 @@ public class MainView extends AppLayout {
 		this.actionsBar = new ActionsBar(this.service, this.model);
 		this.themeToggle = new Button(new Icon(VaadinIcon.MOON), (event) -> toggleTheme());
 		this.themeToggle.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+		this.themeToggle.setAriaLabel("Toggle dark mode");
+		this.themeToggle.setTooltipText("Toggle dark mode");
 		this.formSection.onBootVersionChange(this.dependenciesSection::refresh);
 		this.actionsBar.onShare(() -> new ShareDialog(this.model).open());
 		this.actionsBar.onBookmark(this::openBookmarkPrompt);
@@ -264,6 +266,11 @@ public class MainView extends AppLayout {
 		right.setSpacing(true);
 		right.setHeightFull();
 		right.getStyle().set("overflow", "auto");
+		// Let the dependencies area take the free space so the action bar sits at the
+		// bottom of the pane, next to the work area rather than floating at the top (gh
+		// #5).
+		right.setFlexGrow(1, this.dependenciesSection);
+		right.setFlexGrow(0, this.actionsBar);
 		SplitLayout split = new SplitLayout(formWrapper, right);
 		split.setSizeFull();
 		split.setSplitterPosition(60);
@@ -285,6 +292,9 @@ public class MainView extends AppLayout {
 	private void setDarkMode(boolean dark) {
 		this.darkMode = dark;
 		this.themeToggle.setIcon(new Icon(dark ? VaadinIcon.SUN_O : VaadinIcon.MOON));
+		String label = dark ? "Switch to light mode" : "Switch to dark mode";
+		this.themeToggle.setAriaLabel(label);
+		this.themeToggle.setTooltipText(label);
 		getElement().executeJs("document.documentElement.style.colorScheme = $0;", dark ? "dark" : "light");
 	}
 

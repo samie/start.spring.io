@@ -37,6 +37,8 @@ import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
  */
 public class ExploreDialog extends Dialog {
 
+	private static final String PLACEHOLDER = "Select a file to view its contents";
+
 	private final Pre fileContent = new Pre();
 
 	public ExploreDialog(Map<String, String> files) {
@@ -51,12 +53,12 @@ public class ExploreDialog extends Dialog {
 		tree.getStyle().set("flex", "0 0 auto").set("width", "fit-content").set("max-width", "22rem");
 		TreeData<Node> data = buildTreeData(files);
 		tree.setDataProvider(new TreeDataProvider<>(data));
-		tree.addSelectionListener((event) -> event.getFirstSelectedItem().ifPresent((node) -> {
-			if (node.content() != null) {
-				this.fileContent.setText(node.content());
-			}
-		}));
+		tree.addSelectionListener((event) -> event.getFirstSelectedItem()
+			.ifPresent((node) -> this.fileContent.setText((node.content() != null) ? node.content() : PLACEHOLDER)));
 		tree.expandRecursively(data.getRootItems(), 3);
+		// Show a hint before anything is selected, and whenever a directory is selected
+		// (directories carry no content) rather than leaving the pane blank (gh #6).
+		this.fileContent.setText(PLACEHOLDER);
 		this.fileContent.getStyle()
 			.set("margin", "0")
 			.set("overflow", "auto")

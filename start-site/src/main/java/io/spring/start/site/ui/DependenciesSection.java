@@ -112,6 +112,8 @@ public class DependenciesSection extends VerticalLayout {
 		text.setSpacing(false);
 		Button remove = new Button(new Icon(VaadinIcon.CLOSE_SMALL), (event) -> toggle(id));
 		remove.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE, ButtonVariant.LUMO_SMALL);
+		remove.setAriaLabel("Remove " + name);
+		remove.setTooltipText("Remove " + name);
 		HorizontalLayout chip = new HorizontalLayout(text, remove);
 		chip.setWidthFull();
 		chip.setAlignItems(FlexComponent.Alignment.CENTER);
