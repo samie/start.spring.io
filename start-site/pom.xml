@@ -28,7 +28,7 @@
 	<name>start.spring.io website</name>
 
 	<properties>
-		<vaadin.version>25.1.7</vaadin.version>
+		<vaadin.version>25.2.3</vaadin.version>
 	</properties>
 
 	<dependencyManagement>
