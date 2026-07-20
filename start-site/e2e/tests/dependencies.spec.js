@@ -66,6 +66,24 @@ test.describe('Adding dependencies', () => {
     await expect(dlg.getByText('Spring Web', { exact: true })).toHaveCount(0);
   });
 
+  // The picker opens on a clean slate: an earlier query does not persist across opens,
+  // so the search box matches the full, unfiltered list shown on open.
+  test('reopening the picker clears the previous search', async ({ page }) => {
+    await page.getByRole('button', { name: /Add dependencies/ }).click();
+    let dlg = dialog(page);
+    await dlg.getByRole('textbox').fill('Lombok');
+    await expect(dlg.getByText('Spring Web', { exact: true })).toHaveCount(0);
+    await dlg.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog(page)).toHaveCount(0);
+
+    await page.getByRole('button', { name: /Add dependencies/ }).click();
+    dlg = dialog(page);
+    // Field is empty and the list is unfiltered again (a common dep is visible).
+    await expect(dlg.getByRole('textbox')).toHaveValue('');
+    await expect(dlg.getByText('Spring Web', { exact: true }).first()).toBeVisible();
+    await expect(dlg.getByText('No matching dependencies')).toBeHidden();
+  });
+
   test('a selected dependency can be removed again', async ({ page }) => {
     await addDependency(page, 'Spring Web');
     await expect(page.getByText('Spring Web', { exact: true })).toBeVisible();

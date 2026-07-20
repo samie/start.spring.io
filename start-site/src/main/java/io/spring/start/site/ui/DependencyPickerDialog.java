@@ -86,6 +86,9 @@ public class DependencyPickerDialog extends Dialog {
 		getFooter().add(close);
 		addOpenedChangeListener((event) -> {
 			if (event.isOpened()) {
+				// Open on a clean slate: clear the query so the field matches the full,
+				// unfiltered list shown on open (clearing fires refresh("")).
+				this.search.clear();
 				this.search.focus();
 			}
 		});
