@@ -97,9 +97,19 @@ public class ProjectFormSection extends VerticalLayout {
 		this.binder.forField(javaVersion)
 			.bind(InitializrFormModel::getJavaVersion, InitializrFormModel::setJavaVersion);
 
-		group.addValueChangeListener((event) -> derivePackageName(group.getValue(), artifact.getValue(), packageName));
-		artifact
-			.addValueChangeListener((event) -> derivePackageName(group.getValue(), artifact.getValue(), packageName));
+		// Only auto-derive on real user edits; programmatic loads (default form,
+		// bookmark/history via readBean) carry their own package name and must not be
+		// clobbered by derivation.
+		group.addValueChangeListener((event) -> {
+			if (event.isFromClient()) {
+				derivePackageName(group.getValue(), artifact.getValue(), packageName);
+			}
+		});
+		artifact.addValueChangeListener((event) -> {
+			if (event.isFromClient()) {
+				derivePackageName(group.getValue(), artifact.getValue(), packageName);
+			}
+		});
 		packageName.addValueChangeListener((event) -> {
 			if (event.isFromClient()) {
 				this.packageNameDerivedFromCoordinates = false;

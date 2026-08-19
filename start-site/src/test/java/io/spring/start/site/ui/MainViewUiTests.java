@@ -52,16 +52,19 @@ class MainViewUiTests extends SpringUIUnitTest {
 	private InitializrUiService service;
 
 	@Test
-	void formLoadsWithMetadataDefaults() {
+	void formLoadsWithVaadinDefaults() {
 		MainView view = navigate(MainView.class);
 		InitializrFormModel model = view.getModel();
-		assertThat(model.getType()).isNotBlank();
+		assertThat(model.getType()).isEqualTo("maven-project");
 		assertThat(model.getLanguage()).isEqualTo("java");
 		assertThat(model.getPackaging()).isEqualTo("jar");
-		assertThat(model.getGroupId()).isNotBlank();
-		assertThat(model.getArtifactId()).isNotBlank();
+		assertThat(model.getJavaVersion()).isEqualTo("21");
+		assertThat(model.getGroupId()).isEqualTo("org.vaadin.example");
+		assertThat(model.getArtifactId()).isEqualTo("vaadin-demo");
+		// Package name survives programmatic binding: it is NOT auto-derived to
+		// org.vaadin.example.vaadin_demo (see ProjectFormSection isFromClient guard).
+		assertThat(model.getPackageName()).isEqualTo("org.vaadin.example");
 		assertThat(model.getBootVersion()).isNotBlank();
-		assertThat(model.getJavaVersion()).isNotBlank();
 		assertThat(view).isInstanceOf(AppLayout.class);
 		assertThat(view.getContent()).isInstanceOf(SplitLayout.class);
 		// Project / Language / Spring Boot / Packaging / Java radios populated from
@@ -74,18 +77,19 @@ class MainViewUiTests extends SpringUIUnitTest {
 		MainView view = navigate(MainView.class);
 		InitializrFormModel model = view.getModel();
 		DependenciesSection deps = view.getDependenciesSection();
-		assertThat(model.getDependencies()).isEmpty();
+		// The default form preselects the Vaadin starter.
+		assertThat(model.getDependencies()).containsExactly("vaadin");
 
 		model.getDependencies().add("web");
 		deps.refresh();
 
-		assertThat(model.getDependencies()).containsExactly("web");
+		assertThat(model.getDependencies()).containsExactly("vaadin", "web");
 		// "Add dependencies..." button stays put after a refresh.
 		assertThat($(Button.class, deps).withText("Add dependencies...").exists()).isTrue();
-		// Removing the dep clears the chip and leaves the model empty.
+		// Removing the added dep leaves the Vaadin default in place.
 		model.getDependencies().remove("web");
 		deps.refresh();
-		assertThat(model.getDependencies()).isEmpty();
+		assertThat(model.getDependencies()).containsExactly("vaadin");
 	}
 
 	@Test

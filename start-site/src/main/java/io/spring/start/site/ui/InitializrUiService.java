@@ -95,19 +95,23 @@ public class InitializrUiService {
 	}
 
 	public InitializrFormModel defaultFormModel() {
-		InitializrMetadata metadata = getMetadata();
 		InitializrFormModel model = new InitializrFormModel();
-		model.setType(defaultId(getTypes(), "maven-project"));
-		model.setLanguage(defaultId(getLanguages(), "java"));
+		// Opinionated defaults for this Vaadin-focused instance: a ready-to-generate
+		// Maven / Java 21 project with the Vaadin starter preselected. Mirrors the
+		// canonical bookmark shared with users. The Spring Boot version tracks the live
+		// default (latest release from api.spring.io).
+		model.setType("maven-project");
+		model.setLanguage("java");
 		model.setBootVersion(defaultId(getBootVersions(), null));
-		model.setPackaging(defaultId(getPackagings(), "jar"));
-		model.setJavaVersion(defaultId(getJavaVersions(), null));
-		model.setConfigurationFileFormat(defaultId(getConfigurationFileFormats(), "properties"));
-		model.setGroupId(metadata.getGroupId().getContent());
-		model.setArtifactId(metadata.getArtifactId().getContent());
-		model.setName(metadata.getName().getContent());
-		model.setDescription(metadata.getDescription().getContent());
-		model.setPackageName(metadata.getPackageName().getContent());
+		model.setPackaging("jar");
+		model.setJavaVersion("21");
+		model.setConfigurationFileFormat("properties");
+		model.setGroupId("org.vaadin.example");
+		model.setArtifactId("vaadin-demo");
+		model.setName("vaadin-demo");
+		model.setDescription("Demo project for Spring Boot and Vaadin");
+		model.setPackageName("org.vaadin.example");
+		model.getDependencies().add("vaadin");
 		return model;
 	}
 

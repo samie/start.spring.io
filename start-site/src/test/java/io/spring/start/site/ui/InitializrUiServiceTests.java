@@ -45,15 +45,18 @@ class InitializrUiServiceTests {
 	private InitializrUiService service;
 
 	@Test
-	void defaultFormModelMatchesMetadataDefaults() {
+	void defaultFormModelUsesVaadinMavenJava21Defaults() {
 		InitializrFormModel model = this.service.defaultFormModel();
-		assertThat(model.getType()).isNotBlank();
+		assertThat(model.getType()).isEqualTo("maven-project");
 		assertThat(model.getLanguage()).isEqualTo("java");
 		assertThat(model.getPackaging()).isEqualTo("jar");
-		assertThat(model.getGroupId()).isNotBlank();
-		assertThat(model.getArtifactId()).isNotBlank();
+		assertThat(model.getJavaVersion()).isEqualTo("21");
+		assertThat(model.getConfigurationFileFormat()).isEqualTo("properties");
+		assertThat(model.getGroupId()).isEqualTo("org.vaadin.example");
+		assertThat(model.getArtifactId()).isEqualTo("vaadin-demo");
+		assertThat(model.getPackageName()).isEqualTo("org.vaadin.example");
 		assertThat(model.getBootVersion()).isNotBlank();
-		assertThat(model.getJavaVersion()).isNotBlank();
+		assertThat(model.getDependencies()).contains("vaadin");
 	}
 
 	@Test
@@ -108,6 +111,12 @@ class InitializrUiServiceTests {
 		InitializrFormModel model = this.service.defaultFormModel();
 		var dep = this.service.getDependency("web").orElseThrow();
 		assertThat(this.service.incompatibilityHint(dep, model.getBootVersion())).isNull();
+	}
+
+	@Test
+	void vaadinIsCompatibleWithSpringBoot41() {
+		var vaadin = this.service.getDependency("vaadin").orElseThrow();
+		assertThat(this.service.incompatibilityHint(vaadin, "4.1.0")).isNull();
 	}
 
 	private Set<String> listEntries(byte[] zip) throws Exception {
