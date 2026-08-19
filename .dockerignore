@@ -1,0 +1,11 @@
+# Keep the Docker build context (repo root) small and reproducible.
+target/
+**/target/
+node_modules/
+**/node_modules/
+start-site/src/main/frontend/generated/
+.git/
+.idea/
+*.iml
+.vscode/
+.DS_Store
