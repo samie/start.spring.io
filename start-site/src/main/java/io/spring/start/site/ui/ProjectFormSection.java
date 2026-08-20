@@ -61,6 +61,9 @@ public class ProjectFormSection extends VerticalLayout {
 		RadioButtonGroup<String> type = radioGroup("Project", this.service.getTypes());
 		RadioButtonGroup<String> language = radioGroup("Language", this.service.getLanguages());
 		this.bootVersion = radioGroup("Spring Boot", this.service.getBootVersions());
+		// Technical/code-like values render monospace (a dev-tool cue; see the .mono
+		// utility in styles/app.css). Version numbers qualify.
+		this.bootVersion.addClassName("mono");
 		add(responsiveForm(type, language, this.bootVersion));
 
 		add(new H2("Project Metadata"));
@@ -69,12 +72,17 @@ public class ProjectFormSection extends VerticalLayout {
 		TextField name = new TextField("Name");
 		TextField description = new TextField("Description");
 		TextField packageName = new TextField("Package name");
+		// Coordinates are code identifiers → monospace. Name/Description are prose.
+		group.addClassName("mono");
+		artifact.addClassName("mono");
+		packageName.addClassName("mono");
 		FormLayout metadata = new FormLayout(group, artifact, name, description, packageName);
 		metadata.setWidthFull();
 		add(metadata);
 
 		RadioButtonGroup<String> packaging = radioGroup("Packaging", this.service.getPackagings());
 		RadioButtonGroup<String> javaVersion = radioGroup("Java", this.service.getJavaVersions());
+		javaVersion.addClassName("mono");
 		List<DefaultMetadataElement> formats = this.service.getConfigurationFileFormats();
 		FormLayout options = responsiveForm(packaging, javaVersion);
 		if (!formats.isEmpty()) {

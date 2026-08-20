@@ -5,6 +5,54 @@
  */
 
 /*
+ * Brand token layer: a Vaadin-brand "professional developer tool" visual
+ * language on top of Aura. These override Aura's modifiable root tokens, so the
+ * whole component set re-skins cohesively; every value resolves via CSS
+ * light-dark() keyed off color-scheme, so both themes stay correct.
+ */
+:root {
+	/* Dark-first: first paint is dark before the theme JS runs (see MainView). */
+	color-scheme: dark;
+
+	/* Accent — own Vaadin Blue, used sparingly (primary actions, selection,
+	   focus). Same value in both schemes; its lightness keeps Aura's
+	   auto-derived button text white and AA-legible. */
+	--aura-accent-color-light: #056ff0;
+	--aura-accent-color-dark: #056ff0;
+	--lumo-primary-color: #056ff0;
+
+	/* Canvas — near-black dark, off-blue light (brand). Panels lift from here. */
+	--aura-background-color-dark: #0f0f0f;
+	--aura-background-color-light: #f0f4f7;
+
+	/* Typography — Inter-first system stack (no bundled font asset). */
+	--aura-font-family: Inter, -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+	--lumo-font-family: var(--aura-font-family);
+	--mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", "Noto Sans Mono", Consolas, monospace;
+
+	/* Technical, tighter geometry. */
+	--aura-base-radius: 2;
+	--aura-base-size: 15;
+}
+
+/* Tight, modern headings (Aura already renders them semibold). */
+:where(h1, h2, h3) {
+	letter-spacing: -0.02em;
+	line-height: 1.15;
+}
+
+/*
+ * Monospace utility for technical/code-like data (versions, coordinates).
+ * Custom properties inherit into a component's internal parts, so retargeting
+ * --aura-font-family on the host switches the field/label font without ::part.
+ */
+.mono {
+	--aura-font-family: var(--mono);
+	font-family: var(--mono);
+	font-feature-settings: "liga" 0;
+}
+
+/*
  * Main screen: two functional areas with exactly two responsive states.
  *
  * Wide (>= 44rem): the form and dependencies panes sit side by side and each
@@ -18,7 +66,7 @@
 	height: 100%;
 	width: 100%;
 	box-sizing: border-box;
-	gap: var(--lumo-space-m);
+	gap: var(--lumo-space-s);
 }
 
 /* Panes fill the row height; min-height/min-width:0 let them shrink so their
@@ -41,7 +89,7 @@
    panel. The aura-surface class supplies the tint; both tokens resolve via CSS
    light-dark(), so they follow the day/night toggle automatically. */
 .main-content > .main-column-deps {
-	border: 1px solid var(--vaadin-border-color-secondary);
+	border: 1px solid var(--vaadin-border-color);
 	border-radius: var(--vaadin-radius-l);
 }
 

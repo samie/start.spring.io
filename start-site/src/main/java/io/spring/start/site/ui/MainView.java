@@ -77,7 +77,7 @@ public class MainView extends AppLayout {
 
 	private final List<Entry> favorites = new ArrayList<>();
 
-	private boolean darkMode;
+	private boolean darkMode = true;
 
 	public MainView(InitializrUiService service, Preferences preferences) {
 		this.service = service;
@@ -88,10 +88,11 @@ public class MainView extends AppLayout {
 		this.formSection = new ProjectFormSection(this.service, this.model, this.binder);
 		this.dependenciesSection = new DependenciesSection(this.service, this.model);
 		this.actionsBar = new ActionsBar(this.service, this.model);
-		this.themeToggle = new Button(new Icon(VaadinIcon.MOON), (event) -> toggleTheme());
+		// Dark-first initial state; applyTheme reconciles with any saved preference.
+		this.themeToggle = new Button(new Icon(VaadinIcon.SUN_O), (event) -> toggleTheme());
 		this.themeToggle.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
-		this.themeToggle.setAriaLabel("Toggle dark mode");
-		this.themeToggle.setTooltipText("Toggle dark mode");
+		this.themeToggle.setAriaLabel("Switch to light mode");
+		this.themeToggle.setTooltipText("Switch to light mode");
 		this.formSection.onBootVersionChange(this.dependenciesSection::refresh);
 		this.actionsBar.onShare(() -> new ShareDialog(this.model).open());
 		this.actionsBar.onBookmark(this::openBookmarkPrompt);
@@ -151,7 +152,9 @@ public class MainView extends AppLayout {
 	}
 
 	private void applyTheme(String theme) {
-		setDarkMode("dark".equalsIgnoreCase(theme));
+		// Dark-first: a dev tool defaults to dark. Only an explicit saved "light"
+		// preference opts out; unset/blank/"dark" all resolve to dark.
+		setDarkMode(!"light".equalsIgnoreCase(theme));
 	}
 
 	private void recordHistory() {
