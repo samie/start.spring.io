@@ -45,4 +45,9 @@ class MavenProjectGenerationConfiguration {
 		return new AnnotationProcessorExclusionBuildCustomizer(metadata);
 	}
 
+	@Bean
+	PomProvenanceCommentProjectContributor pomProvenanceCommentProjectContributor() {
+		return new PomProvenanceCommentProjectContributor();
+	}
+
 }
