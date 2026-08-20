@@ -54,7 +54,7 @@ import io.spring.start.site.ui.Preferences.Entry;
  * @author Vaadin UI Migration
  */
 @Route("")
-@PageTitle("Spring Initializr")
+@PageTitle("Vaadin Initializr")
 public class MainView extends AppLayout {
 
 	private final InitializrUiService service;
@@ -252,7 +252,7 @@ public class MainView extends AppLayout {
 
 	private void buildNavbar() {
 		DrawerToggle toggle = new DrawerToggle();
-		H1 title = new H1("Spring Initializr");
+		H1 title = new H1("Vaadin Initializr");
 		title.getStyle().set("font-size", "1.125rem").set("margin", "0");
 		HorizontalLayout right = new HorizontalLayout(this.themeToggle);
 		right.setSpacing(true);
