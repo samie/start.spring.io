@@ -2,7 +2,7 @@
 :library: https://github.com/spring-io/initializr
 
 This repository configures a {library}[Spring Initializr] instance with a custom UI
-running at https://start.spring.io. The UI is a server-side
+running at https://pro.startvaadin.com/. The UI is a server-side
 https://vaadin.com/[Vaadin Flow] application hosted inside `start-site`.
 The following modules are available:
 
