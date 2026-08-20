@@ -26,6 +26,7 @@ import com.vaadin.flow.theme.aura.Aura;
  * @author Vaadin UI Migration
  */
 @StyleSheet(Aura.STYLESHEET)
+@StyleSheet("context://styles/app.css")
 public class AppShell implements AppShellConfigurator {
 
 }

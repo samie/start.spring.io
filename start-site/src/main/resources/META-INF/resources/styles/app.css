@@ -1,0 +1,62 @@
+/*
+ * Project styles for the start.spring.io Vaadin UI, layered on top of the Aura
+ * theme. Served as a classpath static resource (META-INF/resources) and loaded
+ * via @StyleSheet on AppShell, the same way the Aura stylesheet is delivered.
+ */
+
+/*
+ * Main screen: two functional areas with exactly two responsive states.
+ *
+ * Wide (>= 44rem): the form and dependencies panes sit side by side and each
+ * fills the window height, scrolling INTERNALLY when its content overflows, so
+ * the page itself never scrolls. Stacked (< 44rem): the dependencies pane drops
+ * below the form, both take their natural height, and the page scrolls.
+ */
+.main-content {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	width: 100%;
+	box-sizing: border-box;
+	gap: var(--lumo-space-m);
+}
+
+/* Panes fill the row height; min-height/min-width:0 let them shrink so their
+   own overflow:auto scrollbars engage instead of pushing the page taller. */
+.main-content > .main-column {
+	overflow: auto;
+	min-height: 0;
+	min-width: 0;
+}
+
+.main-content > .main-column-form {
+	flex: 3 1 0;
+}
+
+.main-content > .main-column-deps {
+	flex: 2 1 0;
+}
+
+/* The dependencies pane reads as a subtly tinted, softly-bordered, rounded
+   panel. The aura-surface class supplies the tint; both tokens resolve via CSS
+   light-dark(), so they follow the day/night toggle automatically. */
+.main-content > .main-column-deps {
+	border: 1px solid var(--vaadin-border-color-secondary);
+	border-radius: var(--vaadin-radius-l);
+}
+
+/* Stacked state: below the width where two 22rem columns fit side by side
+   (44rem = 704px at the 16px media base). */
+@media (max-width: 44rem) {
+	.main-content {
+		flex-direction: column;
+		height: auto;
+		min-height: 100%;
+	}
+
+	.main-content > .main-column {
+		overflow: visible;
+		flex: 0 0 auto;
+		width: 100%;
+	}
+}

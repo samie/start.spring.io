@@ -98,6 +98,10 @@ public class MainView extends AppLayout {
 		this.actionsBar.afterGenerate(this::recordHistory);
 		setPrimarySection(Section.DRAWER);
 		buildDrawer();
+		// Start collapsed: History/Favorites are occasional actions and the drawer would
+		// otherwise steal horizontal space from the form on every load. The navbar
+		// DrawerToggle opens it on demand.
+		setDrawerOpened(false);
 		buildNavbar();
 		setContent(buildContent());
 		registerShortcuts();
@@ -255,30 +259,31 @@ public class MainView extends AppLayout {
 	}
 
 	/**
-	 * Responsive two-column content: a wrapping flexbox. On a wide viewport the form
-	 * (~60%) and the dependencies/actions column (~40%) sit side by side; once a column
-	 * can no longer keep its {@code min-width}, the second wraps below the first into a
-	 * single stacked column — the correct behavior on mobile. No drag handle, no width
-	 * listeners: the wrap point is driven purely by CSS flex-wrap.
+	 * Responsive two-column content with exactly two states, driven by the
+	 * {@code .main-content} rules in {@code styles/app.css} (loaded via
+	 * {@link AppShell}): side by side the form (~60%) and the dependencies/actions panel
+	 * (~40%) each fill the window height and scroll internally; below {@code 44rem} the
+	 * panel stacks under the form at natural height and the page scrolls. The
+	 * dependencies panel's tint comes from Aura's stock {@code aura-surface} class (its
+	 * border/radius live in the stylesheet); both follow the day/night toggle via CSS
+	 * {@code light-dark()}.
 	 * @return the content layout to mount as the AppLayout content
 	 */
 	private Component buildContent() {
 		VerticalLayout formColumn = new VerticalLayout(this.formSection);
 		formColumn.setPadding(true);
 		formColumn.setSpacing(true);
-		// ~60% share on wide screens; wraps to full width when it can't keep min-width.
-		formColumn.getStyle().set("flex", "3 1 22rem").set("min-width", "min(100%, 22rem)");
+		formColumn.addClassNames("main-column", "main-column-form");
 		VerticalLayout rightColumn = new VerticalLayout(this.dependenciesSection, this.actionsBar);
 		rightColumn.setPadding(true);
 		rightColumn.setSpacing(true);
-		rightColumn.getStyle().set("flex", "2 1 22rem").set("min-width", "min(100%, 22rem)");
+		rightColumn.addClassNames("main-column", "main-column-deps", "aura-surface");
 		// Let the dependencies area take the free space so the action bar sits below it
 		// rather than floating directly under the header (gh #5).
 		rightColumn.setFlexGrow(1, this.dependenciesSection);
 		rightColumn.setFlexGrow(0, this.actionsBar);
 		FlexLayout content = new FlexLayout(formColumn, rightColumn);
-		content.setFlexWrap(FlexLayout.FlexWrap.WRAP);
-		content.setWidthFull();
+		content.addClassName("main-content");
 		return content;
 	}
 
