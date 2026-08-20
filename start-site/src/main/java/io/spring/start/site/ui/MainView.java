@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.ShortcutRegistration;
@@ -36,9 +37,9 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
@@ -253,28 +254,32 @@ public class MainView extends AppLayout {
 		addToNavbar(toggle, title, right);
 	}
 
-	private SplitLayout buildContent() {
-		VerticalLayout formWrapper = new VerticalLayout(this.formSection);
-		formWrapper.setPadding(true);
-		formWrapper.setSpacing(true);
-		// Fill the split pane and scroll vertically when the form is taller than the
-		// viewport, rather than overflowing the pane.
-		formWrapper.setHeightFull();
-		formWrapper.getStyle().set("overflow", "auto");
-		VerticalLayout right = new VerticalLayout(this.dependenciesSection, this.actionsBar);
-		right.setPadding(true);
-		right.setSpacing(true);
-		right.setHeightFull();
-		right.getStyle().set("overflow", "auto");
-		// Let the dependencies area take the free space so the action bar sits at the
-		// bottom of the pane, next to the work area rather than floating at the top (gh
-		// #5).
-		right.setFlexGrow(1, this.dependenciesSection);
-		right.setFlexGrow(0, this.actionsBar);
-		SplitLayout split = new SplitLayout(formWrapper, right);
-		split.setSizeFull();
-		split.setSplitterPosition(60);
-		return split;
+	/**
+	 * Responsive two-column content: a wrapping flexbox. On a wide viewport the form
+	 * (~60%) and the dependencies/actions column (~40%) sit side by side; once a column
+	 * can no longer keep its {@code min-width}, the second wraps below the first into a
+	 * single stacked column — the correct behavior on mobile. No drag handle, no width
+	 * listeners: the wrap point is driven purely by CSS flex-wrap.
+	 * @return the content layout to mount as the AppLayout content
+	 */
+	private Component buildContent() {
+		VerticalLayout formColumn = new VerticalLayout(this.formSection);
+		formColumn.setPadding(true);
+		formColumn.setSpacing(true);
+		// ~60% share on wide screens; wraps to full width when it can't keep min-width.
+		formColumn.getStyle().set("flex", "3 1 22rem").set("min-width", "min(100%, 22rem)");
+		VerticalLayout rightColumn = new VerticalLayout(this.dependenciesSection, this.actionsBar);
+		rightColumn.setPadding(true);
+		rightColumn.setSpacing(true);
+		rightColumn.getStyle().set("flex", "2 1 22rem").set("min-width", "min(100%, 22rem)");
+		// Let the dependencies area take the free space so the action bar sits below it
+		// rather than floating directly under the header (gh #5).
+		rightColumn.setFlexGrow(1, this.dependenciesSection);
+		rightColumn.setFlexGrow(0, this.actionsBar);
+		FlexLayout content = new FlexLayout(formColumn, rightColumn);
+		content.setFlexWrap(FlexLayout.FlexWrap.WRAP);
+		content.setWidthFull();
+		return content;
 	}
 
 	private void toggleTheme() {

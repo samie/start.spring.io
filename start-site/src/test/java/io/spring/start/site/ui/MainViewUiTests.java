@@ -18,8 +18,8 @@ package io.spring.start.site.ui;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
-import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.testbench.unit.SpringUIUnitTest;
 import com.vaadin.testbench.unit.ViewPackages;
 import org.junit.jupiter.api.Disabled;
@@ -66,7 +66,7 @@ class MainViewUiTests extends SpringUIUnitTest {
 		assertThat(model.getPackageName()).isEqualTo("org.vaadin.example");
 		assertThat(model.getBootVersion()).isNotBlank();
 		assertThat(view).isInstanceOf(AppLayout.class);
-		assertThat(view.getContent()).isInstanceOf(SplitLayout.class);
+		assertThat(view.getContent()).isInstanceOf(FlexLayout.class);
 		// Project / Language / Spring Boot / Packaging / Java radios populated from
 		// metadata.
 		assertThat($(RadioButtonGroup.class).all()).hasSizeGreaterThanOrEqualTo(4);
