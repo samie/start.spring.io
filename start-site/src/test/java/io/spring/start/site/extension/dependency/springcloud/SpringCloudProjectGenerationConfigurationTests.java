@@ -23,8 +23,10 @@ import io.spring.initializr.generator.buildsystem.gradle.GradleBuildSystem;
 import io.spring.initializr.generator.buildsystem.maven.MavenBuild;
 import io.spring.initializr.generator.project.MutableProjectDescription;
 import io.spring.initializr.generator.test.project.ProjectAssetTester;
+import io.spring.initializr.generator.version.Version;
 import io.spring.initializr.metadata.InitializrMetadata;
 import io.spring.initializr.metadata.InitializrMetadataProvider;
+import io.spring.start.site.SupportedBootVersion;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +74,24 @@ class SpringCloudProjectGenerationConfigurationTests {
 		description.addDependency("cloud-contract-verifier", mock(Dependency.class));
 		this.projectTester.configure(description, (context) -> assertThat(context)
 			.hasSingleBean(SpringCloudContractKotlinDslGradleBuildCustomizer.class));
+	}
+
+	@Test
+	void gatewayDependenciesResolveForSpringBoot41() {
+		var gateway = resolveDependency("cloud-gateway");
+		assertThat(gateway.getGroupId()).isEqualTo("org.springframework.cloud");
+		assertThat(gateway.getArtifactId()).isEqualTo("spring-cloud-starter-gateway-server-webmvc");
+
+		var reactiveGateway = resolveDependency("cloud-gateway-reactive");
+		assertThat(reactiveGateway.getGroupId()).isEqualTo("org.springframework.cloud");
+		assertThat(reactiveGateway.getArtifactId()).isEqualTo("spring-cloud-starter-gateway-server-webflux");
+	}
+
+	private io.spring.initializr.metadata.Dependency resolveDependency(String id) {
+		return this.metadataProvider.get()
+			.getDependencies()
+			.get(id)
+			.resolve(Version.parse(SupportedBootVersion.V4_1.getVersion()));
 	}
 
 }
