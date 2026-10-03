@@ -17,38 +17,6 @@
 			<artifactId>start-site</artifactId>
 		</dependency>
 
-		<!-- Aether dependencies for dependency resolution -->
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-api</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-impl</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-connector-basic</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-transport-http</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.aether</groupId>
-			<artifactId>aether-spi</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
